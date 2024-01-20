@@ -1,15 +1,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.OIConstants;
-import frc.robot.autos.*;
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,25 +12,9 @@ import frc.robot.subsystems.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    /* Controllers */
-    private final PS5Controller m_driver = new PS5Controller(OIConstants.kDriverController);
-
-    /* Subsystems */
-    private final Swerve m_swerve = new Swerve();
-
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        m_swerve.setDefaultCommand(
-            new TeleopSwerve(
-                () -> -m_driver.getLeftY(), 
-                () -> -m_driver.getLeftX(), 
-                () -> -m_driver.getRightX(), 
-                () -> m_driver.getR1Button(),
-                m_swerve
-            )
-        );
-
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -48,8 +26,6 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        /* Driver Buttons */
-        new JoystickButton(m_driver, PS5Controller.Button.kOptions.value).onTrue(new InstantCommand(() -> m_swerve.zeroHeading()));
     }
 
     /**
@@ -58,7 +34,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        return new exampleAuto(m_swerve);
+        return new WaitCommand(15);
     }
 }
