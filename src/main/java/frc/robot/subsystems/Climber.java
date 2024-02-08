@@ -42,14 +42,23 @@ public class Climber extends SubsystemBase {
     m_armEncoder.setPositionConversionFactor(1); //TODO: enter correct value
     m_hookEncoder.setPositionConversionFactor(1);
 
+
   }
 // raises arms
   public void raiseArms() {
-    m_armClimber.set(0.5);
+    // 4 is just a placeholder for the max rotaions of the motor before the robot breaks
+    if (getArmEncoderPosition() < 4) {
+      m_armClimber.set(0.5);
+    } else {
+      stopArms();
+    }
+    
+  
   }
 // lowers arms
   public void lowerArms() {
     m_armClimber.set(-0.5);
+
   }
 // stops arms
   public void stopArms() {

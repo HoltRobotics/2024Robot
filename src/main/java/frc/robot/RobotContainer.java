@@ -1,9 +1,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.Climber.MoveArmsUp;
 import frc.robot.subsystems.Climber;
 
 /**
@@ -14,6 +17,8 @@ import frc.robot.subsystems.Climber;
  */
 public class RobotContainer {
     public final Climber m_climber = new Climber();
+
+    public final PS5Controller m_driver = new PS5Controller(0);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -28,6 +33,7 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        new JoystickButton(m_driver, PS5Controller.Button.kCircle.value).toggleOnTrue(new MoveArmsUp(m_climber));
     }
 
     /**
