@@ -10,7 +10,7 @@ import frc.robot.subsystems.Climber;
 public class MoveArmsDown extends Command {
   private final Climber m_climber;
 
-  /** Creates a new MoveArmsUp. */
+  /** Creates a new MoveArmsDown. */
   public MoveArmsDown(Climber climber) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_climber = climber;
