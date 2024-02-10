@@ -1,14 +1,11 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PS5Controller;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
-import frc.robot.autos.*;
-import frc.robot.commands.*;
+import frc.robot.commands.Shooter.*;
+import frc.robot.commands.Swerve.*;
 import frc.robot.subsystems.*;
 
 /**
@@ -23,6 +20,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve m_swerve = new Swerve();
+    private final Shooter m_shooter = new Shooter();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -37,6 +35,8 @@ public class RobotContainer {
             )
         );
 
+        m_shooter.setDefaultCommand(new StopShooter(m_shooter));
+
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -49,7 +49,9 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        new JoystickButton(m_driver, PS5Controller.Button.kOptions.value).onTrue(new InstantCommand(() -> m_swerve.zeroHeading()));
+        new JoystickButton(m_driver, PS5Controller.Button.kOptions.value).onTrue(new ZeroHeading(m_swerve));
+        new JoystickButton(m_driver, PS5Controller.Button.kCross.value).whileTrue(new RunShooter(m_shooter));
+        new JoystickButton(m_driver, PS5Controller.Button.kCircle.value).whileTrue(new RunShooter(50, m_shooter));
     }
 
     /**
@@ -58,7 +60,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        return new exampleAuto(m_swerve);
+        return new WaitCommand(0);
     }
 }

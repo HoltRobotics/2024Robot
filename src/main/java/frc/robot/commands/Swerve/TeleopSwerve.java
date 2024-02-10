@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Swerve;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
@@ -18,6 +18,14 @@ public class TeleopSwerve extends Command {
     private BooleanSupplier m_robotCentric;
     private Swerve m_swerve;    
 
+    /**
+     * The default drive command.
+     * @param translation Forward or back (-1 - 1).
+     * @param strafe Side to side (-1 - 1).
+     * @param rotation Spining (-1 - 1).
+     * @param robotCentric Ignore the gyro or not.
+     * @param swerve The Swerve subsystem.
+     */
     public TeleopSwerve(DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, Swerve swerve) {
         m_swerve = swerve;
         addRequirements(m_swerve);
