@@ -38,7 +38,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
 
-        new JoystickButton(m_driver, PS5Controller.Button.kCircle.value).whileTrue((new MoveArmsUp(m_climber)));
+        new JoystickButton(m_driver, PS5Controller.Button.kCircle.value).whileTrue(new MoveArmsUp(m_climber));
         new JoystickButton(m_driver, PS5Controller.Button.kCircle.value).whileFalse(new MoveArmsDown(m_climber));
         new JoystickButton(m_driver, PS5Controller.Button.kCross.value).whileTrue(new MoveHooksUp(m_climber));
         new JoystickButton(m_driver, PS5Controller.Button.kCross.value).whileFalse(new MoveArmsDown(m_climber));
