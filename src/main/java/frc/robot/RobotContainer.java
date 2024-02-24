@@ -112,6 +112,8 @@ public class RobotContainer {
         new JoystickButton(m_operator, 18).onTrue(new MoveArmsUp(m_climber));
         new JoystickButton(m_operator, 20).onTrue(new MoveArmsDown(m_climber));
 
+        new JoystickButton(m_operator, 14).onTrue(new SetShooterSpeed(27, m_shooter).alongWith(new SetArmAngle(27, m_arm))).onFalse(new SetArmAngle(ArmConstants.kArmHomeAngle, m_arm).alongWith(new SetShooterSpeed(0, m_shooter)));
+
     }
 
     /**
