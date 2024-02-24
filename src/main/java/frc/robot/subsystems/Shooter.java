@@ -13,26 +13,25 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
-  private final TalonFX m_topShooter = new TalonFX(1);
-  private final TalonFX m_bottomShooter = new TalonFX(2);
+  private final TalonFX m_topShooter = new TalonFX(ShooterConstants.kTopShooterID);
+  private final TalonFX m_bottomShooter = new TalonFX(ShooterConstants.kBottomShooterID);
 
   private final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
 
-  private double m_setpoint = 0;
+  private double m_shooterSetpoint = 0;
 
   private final ShuffleboardTab m_tab = Shuffleboard.getTab("Main");
   private final GenericEntry m_targetRPS;
   private final GenericEntry m_actaualRPS;
 
+  private boolean m_enable;
+  private double m_tolerance = 0;
+
   /** Creates a new Shooter. */
   public Shooter() {
-    m_topShooter.setInverted(false);
-    m_bottomShooter.setInverted(true);
-
-    setSetpoint(0);
-
     TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
     Slot0Configs slot0Configs = talonFXConfigs.Slot0;
@@ -51,36 +50,59 @@ public class Shooter extends SubsystemBase {
 
     m_targetRPS = m_tab.add("Set RPS", 1.0).getEntry();
     m_actaualRPS = m_tab.add("Actual RPS", getActualRPS()).getEntry();
+
+    setSpeed(0);
+
+    enable();
   }
 
-  public void setSetpoint(double rps) {
-    m_setpoint = rps;
+  public void setSpeed(double rps) {
+    m_shooterSetpoint = rps;
   }
 
-  public double getSetpoint() {
-    return m_setpoint;
+  public double getShooterSetpoint() {
+    return m_shooterSetpoint;
   }
 
+  public void setTolerance(double tolerance) {
+    m_tolerance = tolerance;
+  }
+
+  public boolean atSpeed() {
+    if(Math.abs(getActualRPS() - m_shooterSetpoint) > m_tolerance) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   public double getActualRPS() {
     return (Math.abs(m_topShooter.getVelocity().getValueAsDouble()) + Math.abs(m_bottomShooter.getVelocity().getValueAsDouble())) / 2;
   }
 
-  public void run() {
-    m_topShooter.setControl(m_request.withVelocity(m_setpoint));
-    m_bottomShooter.setControl(m_request.withVelocity(-m_setpoint));
-
+  public void enable() {
+    m_enable = true;
   }
 
-  public void stop() {
-    m_topShooter.stopMotor();
-    m_bottomShooter.stopMotor();
+  public void disable() {
+    m_enable = false;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_setpoint = m_targetRPS.getDouble(1.0);
+    // m_shooterSetpoint = m_targetRPS.getDouble(1.0);
     m_actaualRPS.setDouble(getActualRPS());
+    if(m_enable) {
+      m_topShooter.setControl(m_request.withVelocity(-m_shooterSetpoint));
+      m_topShooter.feed();
+      m_bottomShooter.setControl(m_request.withVelocity(m_shooterSetpoint));
+      m_bottomShooter.feed();
+    } else {
+      m_topShooter.setControl(m_request.withVelocity(0));
+      m_topShooter.feed();
+      m_bottomShooter.setControl(m_request.withVelocity(-0));
+      m_bottomShooter.feed();
+    }
   }
 }

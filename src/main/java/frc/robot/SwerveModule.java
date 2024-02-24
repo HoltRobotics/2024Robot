@@ -21,7 +21,7 @@ public class SwerveModule {
     private TalonFX m_driveMotor;
     private CANcoder m_angleEncoder;
 
-    private final SimpleMotorFeedforward m_driveFeedForward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
+    private final SimpleMotorFeedforward m_driveFeedForward = new SimpleMotorFeedforward(Constants.SwerveConstants.driveKS, Constants.SwerveConstants.driveKV, Constants.SwerveConstants.driveKA);
 
     /* drive motor control requests */
     private final DutyCycleOut m_driveDutyCycle = new DutyCycleOut(0);
@@ -57,11 +57,11 @@ public class SwerveModule {
 
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
         if(isOpenLoop){
-            m_driveDutyCycle.Output = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
+            m_driveDutyCycle.Output = desiredState.speedMetersPerSecond / Constants.SwerveConstants.maxSpeed;
             m_driveMotor.setControl(m_driveDutyCycle);
         }
         else {
-            m_driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference);
+            m_driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, Constants.SwerveConstants.wheelCircumference);
             m_driveVelocity.FeedForward = m_driveFeedForward.calculate(desiredState.speedMetersPerSecond);
             m_driveMotor.setControl(m_driveVelocity);
         }
@@ -78,14 +78,14 @@ public class SwerveModule {
 
     public SwerveModuleState getState(){
         return new SwerveModuleState(
-            Conversions.RPSToMPS(m_driveMotor.getVelocity().getValue(), Constants.Swerve.wheelCircumference), 
+            Conversions.RPSToMPS(m_driveMotor.getVelocity().getValue(), Constants.SwerveConstants.wheelCircumference), 
             Rotation2d.fromRotations(m_angleMotor.getPosition().getValue())
         );
     }
 
     public SwerveModulePosition getPosition(){
         return new SwerveModulePosition(
-            Conversions.rotationsToMeters(m_driveMotor.getPosition().getValue(), Constants.Swerve.wheelCircumference), 
+            Conversions.rotationsToMeters(m_driveMotor.getPosition().getValue(), Constants.SwerveConstants.wheelCircumference), 
             Rotation2d.fromRotations(m_angleMotor.getPosition().getValue())
         );
     }
